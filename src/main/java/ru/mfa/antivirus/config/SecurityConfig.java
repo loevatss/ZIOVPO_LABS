@@ -38,6 +38,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/error").permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/licenses/signature/public-key").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/licenses/catalog/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/licenses").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/licenses/**").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/system/ping").authenticated()
                         .requestMatchers(HttpMethod.GET, "/api/system/admin").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/users/me").authenticated()

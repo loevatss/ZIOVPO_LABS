@@ -1,0 +1,1093 @@
+{
+  "info": {
+    "_postman_id": "e09c2f05-27ca-4116-b10a-ab4675d87e1d",
+    "name": "ZIOVP",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://localhost:8443"
+    },
+    {
+      "key": "accessToken",
+      "value": ""
+    },
+    {
+      "key": "refreshToken",
+      "value": ""
+    },
+    {
+      "key": "oldRefreshToken",
+      "value": ""
+    },
+    {
+      "key": "adminAccessToken",
+      "value": ""
+    },
+    {
+      "key": "userAAccessToken",
+      "value": ""
+    },
+    {
+      "key": "userBAccessToken",
+      "value": ""
+    },
+    {
+      "key": "adminId",
+      "value": ""
+    },
+    {
+      "key": "userAId",
+      "value": ""
+    },
+    {
+      "key": "userBId",
+      "value": ""
+    },
+    {
+      "key": "productId",
+      "value": ""
+    },
+    {
+      "key": "typeTrialId",
+      "value": ""
+    },
+    {
+      "key": "licenseAKey",
+      "value": ""
+    },
+    {
+      "key": "licenseLimitKey",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Аутентификация",
+      "item": [
+        {
+          "name": "Регистрация",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": [
+                "{{baseUrl}}/api/auth/register"
+              ],
+              "path": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"user1\",\n  \"password\": \"User123!\",\n  \"role\": \"USER\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Логин",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}/api/auth/login"
+              ],
+              "path": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"user1\",\n  \"password\": \"User123!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "pm.collectionVariables.set('accessToken', json.accessToken || '');",
+                  "pm.collectionVariables.set('refreshToken', json.refreshToken || '');"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Обновление пары токенов",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/refresh",
+              "host": [
+                "{{baseUrl}}/api/auth/refresh"
+              ],
+              "path": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "pm.collectionVariables.set('accessToken', json.accessToken || '');",
+                  "pm.collectionVariables.set('refreshToken', json.refreshToken || '');"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Профиль текущего пользователя",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/me",
+              "host": [
+                "{{baseUrl}}/api/users/me"
+              ],
+              "path": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Проверка защищённого endpoint-а",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/system/ping",
+              "host": [
+                "{{baseUrl}}/api/system/ping"
+              ],
+              "path": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Endpoint только для ADMIN",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/system/admin",
+              "host": [
+                "{{baseUrl}}/api/system/admin"
+              ],
+              "path": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Список пользователей для ADMIN",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/users",
+              "host": [
+                "{{baseUrl}}/api/users"
+              ],
+              "path": []
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Проверка refresh-ротации",
+      "item": [
+        {
+          "name": "Сохранение старого refresh токена",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/system/ping",
+              "host": [
+                "{{baseUrl}}/api/system/ping"
+              ],
+              "path": []
+            },
+            "description": "Технический шаг для сохранения текущего refreshToken перед ротацией."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set('oldRefreshToken', pm.collectionVariables.get('refreshToken'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Обновление пары токенов и ротация refresh",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/refresh",
+              "host": [
+                "{{baseUrl}}/api/auth/refresh"
+              ],
+              "path": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "pm.collectionVariables.set('accessToken', json.accessToken || '');",
+                  "pm.collectionVariables.set('refreshToken', json.refreshToken || '');"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Повторное использование старого refresh токена (ожидаемо ошибка)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/refresh",
+              "host": [
+                "{{baseUrl}}/api/auth/refresh"
+              ],
+              "path": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{oldRefreshToken}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Модуль лицензий (Задание 2)",
+      "item": [
+        {
+          "name": "Подготовка пользователей и токенов",
+          "item": [
+            {
+              "name": "Регистрация ADMIN",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/register",
+                  "host": [
+                    "{{baseUrl}}/api/auth/register"
+                  ],
+                  "path": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"admin_lic\",\n  \"password\": \"Admin123!\",\n  \"role\": \"ADMIN\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const json = pm.response.json();",
+                      "pm.collectionVariables.set('adminId', json.id || '');"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Регистрация USER_A",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/register",
+                  "host": [
+                    "{{baseUrl}}/api/auth/register"
+                  ],
+                  "path": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"user_a\",\n  \"password\": \"User123!\",\n  \"role\": \"USER\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const json = pm.response.json();",
+                      "pm.collectionVariables.set('userAId', json.id || '');"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Регистрация USER_B",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/register",
+                  "host": [
+                    "{{baseUrl}}/api/auth/register"
+                  ],
+                  "path": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"user_b\",\n  \"password\": \"User123!\",\n  \"role\": \"USER\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const json = pm.response.json();",
+                      "pm.collectionVariables.set('userBId', json.id || '');"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Логин ADMIN",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/login",
+                  "host": [
+                    "{{baseUrl}}/api/auth/login"
+                  ],
+                  "path": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"admin_lic\",\n  \"password\": \"Admin123!\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const json = pm.response.json();",
+                      "pm.collectionVariables.set('adminAccessToken', json.accessToken || '');"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Логин USER_A",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/login",
+                  "host": [
+                    "{{baseUrl}}/api/auth/login"
+                  ],
+                  "path": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"user_a\",\n  \"password\": \"User123!\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const json = pm.response.json();",
+                      "pm.collectionVariables.set('userAAccessToken', json.accessToken || '');"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Логин USER_B",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/login",
+                  "host": [
+                    "{{baseUrl}}/api/auth/login"
+                  ],
+                  "path": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"user_b\",\n  \"password\": \"User123!\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const json = pm.response.json();",
+                      "pm.collectionVariables.set('userBAccessToken', json.accessToken || '');"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Каталог продуктов и типов лицензий",
+          "item": [
+            {
+              "name": "Получение каталога продуктов",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{adminAccessToken}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/licenses/catalog/products",
+                  "host": [
+                    "{{baseUrl}}/api/licenses/catalog/products"
+                  ],
+                  "path": []
+                }
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const json = pm.response.json();",
+                      "if (Array.isArray(json) && json.length > 0) { pm.collectionVariables.set('productId', json[0].id); }"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Получение каталога типов лицензий",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{adminAccessToken}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/licenses/catalog/types",
+                  "host": [
+                    "{{baseUrl}}/api/licenses/catalog/types"
+                  ],
+                  "path": []
+                }
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const json = pm.response.json();",
+                      "if (Array.isArray(json)) {",
+                      "  const trial = json.find(x => x.name === 'TRIAL');",
+                      "  if (trial) pm.collectionVariables.set('typeTrialId', trial.id);",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Создание лицензий администратором",
+          "item": [
+            {
+              "name": "Создание лицензии администратором",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{adminAccessToken}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/licenses",
+                  "host": [
+                    "{{baseUrl}}/api/licenses"
+                  ],
+                  "path": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"productId\": {{productId}},\n  \"typeId\": {{typeTrialId}},\n  \"ownerId\": {{userAId}},\n  \"deviceCount\": 2,\n  \"description\": \"License for user_a\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const json = pm.response.json();",
+                      "pm.collectionVariables.set('licenseAKey', json.code || '');"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Создание лицензии с лимитом в 1 устройство",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{adminAccessToken}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/licenses",
+                  "host": [
+                    "{{baseUrl}}/api/licenses"
+                  ],
+                  "path": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"productId\": {{productId}},\n  \"typeId\": {{typeTrialId}},\n  \"ownerId\": {{userAId}},\n  \"deviceCount\": 1,\n  \"description\": \"One-device license\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const json = pm.response.json();",
+                      "pm.collectionVariables.set('licenseLimitKey', json.code || '');"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Операции пользователя",
+          "item": [
+            {
+              "name": "Активация лицензии владельцем (успешно)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{userAAccessToken}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/licenses/activate",
+                  "host": [
+                    "{{baseUrl}}/api/licenses/activate"
+                  ],
+                  "path": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"activationKey\": \"{{licenseAKey}}\",\n  \"deviceName\": \"UserA-Laptop\",\n  \"deviceMac\": \"AA:BB:CC:DD:EE:01\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Проверка лицензии на устройстве владельца (успешно)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{userAAccessToken}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/licenses/check",
+                  "host": [
+                    "{{baseUrl}}/api/licenses/check"
+                  ],
+                  "path": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"productId\": {{productId}},\n  \"deviceMac\": \"AA:BB:CC:DD:EE:01\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Продление лицензии (TRIAL, успешно при сроке <= 7 дней)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{userAAccessToken}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/licenses/renew",
+                  "host": [
+                    "{{baseUrl}}/api/licenses/renew"
+                  ],
+                  "path": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"activationKey\": \"{{licenseAKey}}\",\n  \"deviceMac\": \"AA:BB:CC:DD:EE:01\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Негативные кейсы",
+          "item": [
+            {
+              "name": "Негативный кейс: чужой пользователь активирует чужой ключ (ожидаемо 403)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{userBAccessToken}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/licenses/activate",
+                  "host": [
+                    "{{baseUrl}}/api/licenses/activate"
+                  ],
+                  "path": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"activationKey\": \"{{licenseAKey}}\",\n  \"deviceName\": \"UserB-PC\",\n  \"deviceMac\": \"AA:BB:CC:DD:EE:02\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Негативный кейс: проверка чужого устройства (ожидаемо 403)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{userBAccessToken}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/licenses/check",
+                  "host": [
+                    "{{baseUrl}}/api/licenses/check"
+                  ],
+                  "path": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"productId\": {{productId}},\n  \"deviceMac\": \"AA:BB:CC:DD:EE:01\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Активация лицензии с лимитом 1 устройство: первое устройство",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{userAAccessToken}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/licenses/activate",
+                  "host": [
+                    "{{baseUrl}}/api/licenses/activate"
+                  ],
+                  "path": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"activationKey\": \"{{licenseLimitKey}}\",\n  \"deviceName\": \"UserA-Phone\",\n  \"deviceMac\": \"AA:BB:CC:DD:EE:03\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Негативный кейс: лимит устройств (ожидаемо 409 на второй активации)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{userAAccessToken}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/licenses/activate",
+                  "host": [
+                    "{{baseUrl}}/api/licenses/activate"
+                  ],
+                  "path": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"activationKey\": \"{{licenseLimitKey}}\",\n  \"deviceName\": \"UserA-Tablet\",\n  \"deviceMac\": \"AA:BB:CC:DD:EE:04\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "ЭЦП тикета",
+          "item": [
+            {
+              "name": "ЭЦП тикета: получение публичного ключа сервера",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/licenses/signature/public-key",
+                  "host": [
+                    "{{baseUrl}}/api/licenses/signature/public-key"
+                  ],
+                  "path": []
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
