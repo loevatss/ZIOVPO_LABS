@@ -1,20 +1,12 @@
-# Задание 2
+# Задание 3.
 
-1. Реализовать структуру таблиц и связей в PostgreSQL по ER-диаграмме.
-2. Реализовать операцию создания лицензии, опираясь на диаграмму последовательности.
-3. Реализовать операцию активации лицензии, опираясь на диаграмму последовательности.
-4. Реализовать операцию проверки лицензии, опираясь на диаграмму последовательности.
-5. Реализовать операцию продления лицензии, опираясь на диаграмму последовательности.
-6. Создать класс Ticket для передачи информации о лицензии клиентам. Тикет должен состоять из:
-   - Текущей даты сервера
-   - Времени жизни тикета
-   - Даты активации лицензии
-   - Даты истечения лицензии
-   - Идентификатора пользователя
-   - Идентификатора устройства
-   - Флага блокировки лицензии
+**Реализация модуля электронной цифровой подписи (ЭЦП)**
 
-7. Создать класс TicketResponse, содержащий Ticket и ЭЦП на его основе
+1. Создать хранилище с приватным ключом и публичным сертификатом для создания и проверки подписи.
+2. Добавить хранилище с ключами в Gitlab CI/CD variables (Github secrets).
+3. Реализовать компоненты модуля ЭЦП, согласно требованиям.
+4. Подключить модуль ЭЦП к лицензии для подписания ответов.
+5. Убедиться, что подпись тикета формируется корректно.
 
 ## Запуск
 
@@ -275,8 +267,86 @@ curl -k -s -X POST "$BASE_URL/api/licenses/renew" \
   }" | jq
 ```
 
-### ЭЦП тикета: получение публичного ключа сервера
+## Lab_3 (ЭЦП): запросы и проверки
+
+### 1) Получить публичный ключ и сертификат подписи (успешно, 200)
 
 ```bash
-curl -k -s "$BASE_URL/api/licenses/signature/public-key" | jq
+curl -k -i -s "$BASE_URL/api/licenses/signature/public-key" | sed -n '1,40p'
+```
+
+### 2) Получить подписанный Ticket (успешно, 200)
+
+```bash
+TICKET_RESPONSE=$(curl -k -s -X POST "$BASE_URL/api/licenses/check" \
+  -H "Authorization: Bearer $USER_A_ACCESS" \
+  -H "Content-Type: application/json" \
+  -d "{
+    \"productId\": $PRODUCT_ID,
+    \"deviceMac\": \"AA:BB:CC:DD:EE:01\"
+  }")
+
+echo "$TICKET_RESPONSE" | jq
+```
+
+### 3) Проверка подписи тикета через OpenSSL (успешно)
+
+```bash
+SIGNATURE_B64=$(echo "$TICKET_RESPONSE" | jq -r '.signature')
+echo "$TICKET_RESPONSE" | jq -S -c '.ticket' > /tmp/ticket.json
+echo "$SIGNATURE_B64" | base64 -d > /tmp/ticket.sig
+
+PUB_INFO=$(curl -k -s "$BASE_URL/api/licenses/signature/public-key")
+echo "$PUB_INFO" | jq -r '.certificatePem' > /tmp/ticket_cert.pem
+openssl x509 -in /tmp/ticket_cert.pem -pubkey -noout > /tmp/ticket_pub.pem
+
+openssl dgst -sha256 -verify /tmp/ticket_pub.pem -signature /tmp/ticket.sig /tmp/ticket.json
+```
+
+### 4) изменённый Ticket (проверка должна упасть)
+
+```bash
+cp /tmp/ticket.json /tmp/ticket_tampered.json
+sed -i '' 's/"licenseBlocked":false/"licenseBlocked":true/' /tmp/ticket_tampered.json
+
+openssl dgst -sha256 -verify /tmp/ticket_pub.pem -signature /tmp/ticket.sig /tmp/ticket_tampered.json
+```
+
+### 5)check лицензии чужим пользователем (ошибка 403)
+
+```bash
+curl -k -i -X POST "$BASE_URL/api/licenses/check" \
+  -H "Authorization: Bearer $USER_B_ACCESS" \
+  -H "Content-Type: application/json" \
+  -d "{
+    \"productId\": $PRODUCT_ID,
+    \"deviceMac\": \"AA:BB:CC:DD:EE:01\"
+  }"
+```
+
+### 6) check с некорректным MAC (ошибка 400)
+
+```bash
+curl -k -i -X POST "$BASE_URL/api/licenses/check" \
+  -H "Authorization: Bearer $USER_A_ACCESS" \
+  -H "Content-Type: application/json" \
+  -d "{
+    \"productId\": $PRODUCT_ID,
+    \"deviceMac\": \"NOT_A_MAC\"
+  }"
+```
+
+### 7) создание лицензии пользователем USER (ошибка 403)
+
+```bash
+curl -k -i -X POST "$BASE_URL/api/licenses" \
+  -H "Authorization: Bearer $USER_A_ACCESS" \
+  -H "Content-Type: application/json" \
+  -d "{
+    \"productId\": $PRODUCT_ID,
+    \"typeId\": $TYPE_TRIAL_ID,
+    \"ownerId\": $USER_A_ID,
+    \"deviceCount\": 1,
+    \"description\": \"Should be denied for USER role\"
+  }"
 ```
