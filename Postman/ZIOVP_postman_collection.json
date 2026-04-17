@@ -6,19 +6,7 @@
   },
   "variable": [
     {
-      "key": "baseUrl",
-      "value": "https://localhost:8443"
-    },
-    {
       "key": "accessToken",
-      "value": ""
-    },
-    {
-      "key": "refreshToken",
-      "value": ""
-    },
-    {
-      "key": "oldRefreshToken",
       "value": ""
     },
     {
@@ -26,32 +14,12 @@
       "value": ""
     },
     {
-      "key": "userAAccessToken",
-      "value": ""
-    },
-    {
-      "key": "userBAccessToken",
-      "value": ""
-    },
-    {
       "key": "adminId",
       "value": ""
     },
     {
-      "key": "userAId",
-      "value": ""
-    },
-    {
-      "key": "userBId",
-      "value": ""
-    },
-    {
-      "key": "productId",
-      "value": ""
-    },
-    {
-      "key": "typeTrialId",
-      "value": ""
+      "key": "baseUrl",
+      "value": "https://localhost:8443"
     },
     {
       "key": "licenseAKey",
@@ -62,7 +30,19 @@
       "value": ""
     },
     {
-      "key": "signaturePublicKeyBase64",
+      "key": "missingSignatureId",
+      "value": "11111111-1111-1111-1111-111111111111"
+    },
+    {
+      "key": "oldRefreshToken",
+      "value": ""
+    },
+    {
+      "key": "productId",
+      "value": ""
+    },
+    {
+      "key": "refreshToken",
       "value": ""
     },
     {
@@ -70,11 +50,43 @@
       "value": ""
     },
     {
+      "key": "signatureId",
+      "value": ""
+    },
+    {
+      "key": "signaturePublicKeyBase64",
+      "value": ""
+    },
+    {
+      "key": "sinceTs",
+      "value": "2026-01-01T00:00:00Z"
+    },
+    {
+      "key": "ticketPayload",
+      "value": ""
+    },
+    {
       "key": "ticketSignature",
       "value": ""
     },
     {
-      "key": "ticketPayload",
+      "key": "typeTrialId",
+      "value": ""
+    },
+    {
+      "key": "userAAccessToken",
+      "value": ""
+    },
+    {
+      "key": "userAId",
+      "value": ""
+    },
+    {
+      "key": "userBAccessToken",
+      "value": ""
+    },
+    {
+      "key": "userBId",
       "value": ""
     }
   ],
@@ -95,7 +107,9 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/api/auth/register",
-              "host": ["{{baseUrl}}/api/auth/register"],
+              "host": [
+                "{{baseUrl}}/api/auth/register"
+              ],
               "path": []
             },
             "body": {
@@ -123,7 +137,9 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/api/auth/login",
-              "host": ["{{baseUrl}}/api/auth/login"],
+              "host": [
+                "{{baseUrl}}/api/auth/login"
+              ],
               "path": []
             },
             "body": {
@@ -164,7 +180,9 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/api/auth/refresh",
-              "host": ["{{baseUrl}}/api/auth/refresh"],
+              "host": [
+                "{{baseUrl}}/api/auth/refresh"
+              ],
               "path": []
             },
             "body": {
@@ -205,7 +223,9 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/api/users/me",
-              "host": ["{{baseUrl}}/api/users/me"],
+              "host": [
+                "{{baseUrl}}/api/users/me"
+              ],
               "path": []
             }
           },
@@ -224,7 +244,9 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/api/system/ping",
-              "host": ["{{baseUrl}}/api/system/ping"],
+              "host": [
+                "{{baseUrl}}/api/system/ping"
+              ],
               "path": []
             }
           },
@@ -243,7 +265,9 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/api/system/admin",
-              "host": ["{{baseUrl}}/api/system/admin"],
+              "host": [
+                "{{baseUrl}}/api/system/admin"
+              ],
               "path": []
             }
           },
@@ -262,7 +286,9 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/api/users",
-              "host": ["{{baseUrl}}/api/users"],
+              "host": [
+                "{{baseUrl}}/api/users"
+              ],
               "path": []
             }
           },
@@ -286,7 +312,9 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/api/system/ping",
-              "host": ["{{baseUrl}}/api/system/ping"],
+              "host": [
+                "{{baseUrl}}/api/system/ping"
+              ],
               "path": []
             },
             "description": "Технический шаг для сохранения текущего refreshToken перед ротацией."
@@ -317,7 +345,9 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/api/auth/refresh",
-              "host": ["{{baseUrl}}/api/auth/refresh"],
+              "host": [
+                "{{baseUrl}}/api/auth/refresh"
+              ],
               "path": []
             },
             "body": {
@@ -358,7 +388,9 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/api/auth/refresh",
-              "host": ["{{baseUrl}}/api/auth/refresh"],
+              "host": [
+                "{{baseUrl}}/api/auth/refresh"
+              ],
               "path": []
             },
             "body": {
@@ -394,7 +426,9 @@
                 ],
                 "url": {
                   "raw": "{{baseUrl}}/api/auth/register",
-                  "host": ["{{baseUrl}}/api/auth/register"],
+                  "host": [
+                    "{{baseUrl}}/api/auth/register"
+                  ],
                   "path": []
                 },
                 "body": {
@@ -434,7 +468,9 @@
                 ],
                 "url": {
                   "raw": "{{baseUrl}}/api/auth/register",
-                  "host": ["{{baseUrl}}/api/auth/register"],
+                  "host": [
+                    "{{baseUrl}}/api/auth/register"
+                  ],
                   "path": []
                 },
                 "body": {
@@ -474,7 +510,9 @@
                 ],
                 "url": {
                   "raw": "{{baseUrl}}/api/auth/register",
-                  "host": ["{{baseUrl}}/api/auth/register"],
+                  "host": [
+                    "{{baseUrl}}/api/auth/register"
+                  ],
                   "path": []
                 },
                 "body": {
@@ -514,7 +552,9 @@
                 ],
                 "url": {
                   "raw": "{{baseUrl}}/api/auth/login",
-                  "host": ["{{baseUrl}}/api/auth/login"],
+                  "host": [
+                    "{{baseUrl}}/api/auth/login"
+                  ],
                   "path": []
                 },
                 "body": {
@@ -554,7 +594,9 @@
                 ],
                 "url": {
                   "raw": "{{baseUrl}}/api/auth/login",
-                  "host": ["{{baseUrl}}/api/auth/login"],
+                  "host": [
+                    "{{baseUrl}}/api/auth/login"
+                  ],
                   "path": []
                 },
                 "body": {
@@ -594,7 +636,9 @@
                 ],
                 "url": {
                   "raw": "{{baseUrl}}/api/auth/login",
-                  "host": ["{{baseUrl}}/api/auth/login"],
+                  "host": [
+                    "{{baseUrl}}/api/auth/login"
+                  ],
                   "path": []
                 },
                 "body": {
@@ -639,7 +683,9 @@
                 ],
                 "url": {
                   "raw": "{{baseUrl}}/api/licenses/catalog/products",
-                  "host": ["{{baseUrl}}/api/licenses/catalog/products"],
+                  "host": [
+                    "{{baseUrl}}/api/licenses/catalog/products"
+                  ],
                   "path": []
                 }
               },
@@ -670,7 +716,9 @@
                 ],
                 "url": {
                   "raw": "{{baseUrl}}/api/licenses/catalog/types",
-                  "host": ["{{baseUrl}}/api/licenses/catalog/types"],
+                  "host": [
+                    "{{baseUrl}}/api/licenses/catalog/types"
+                  ],
                   "path": []
                 }
               },
@@ -714,7 +762,9 @@
                 ],
                 "url": {
                   "raw": "{{baseUrl}}/api/licenses",
-                  "host": ["{{baseUrl}}/api/licenses"],
+                  "host": [
+                    "{{baseUrl}}/api/licenses"
+                  ],
                   "path": []
                 },
                 "body": {
@@ -759,7 +809,9 @@
                 ],
                 "url": {
                   "raw": "{{baseUrl}}/api/licenses",
-                  "host": ["{{baseUrl}}/api/licenses"],
+                  "host": [
+                    "{{baseUrl}}/api/licenses"
+                  ],
                   "path": []
                 },
                 "body": {
@@ -809,7 +861,9 @@
                 ],
                 "url": {
                   "raw": "{{baseUrl}}/api/licenses/activate",
-                  "host": ["{{baseUrl}}/api/licenses/activate"],
+                  "host": [
+                    "{{baseUrl}}/api/licenses/activate"
+                  ],
                   "path": []
                 },
                 "body": {
@@ -842,7 +896,9 @@
                 ],
                 "url": {
                   "raw": "{{baseUrl}}/api/licenses/check",
-                  "host": ["{{baseUrl}}/api/licenses/check"],
+                  "host": [
+                    "{{baseUrl}}/api/licenses/check"
+                  ],
                   "path": []
                 },
                 "body": {
@@ -875,7 +931,9 @@
                 ],
                 "url": {
                   "raw": "{{baseUrl}}/api/licenses/renew",
-                  "host": ["{{baseUrl}}/api/licenses/renew"],
+                  "host": [
+                    "{{baseUrl}}/api/licenses/renew"
+                  ],
                   "path": []
                 },
                 "body": {
@@ -913,7 +971,9 @@
                 ],
                 "url": {
                   "raw": "{{baseUrl}}/api/licenses/activate",
-                  "host": ["{{baseUrl}}/api/licenses/activate"],
+                  "host": [
+                    "{{baseUrl}}/api/licenses/activate"
+                  ],
                   "path": []
                 },
                 "body": {
@@ -946,7 +1006,9 @@
                 ],
                 "url": {
                   "raw": "{{baseUrl}}/api/licenses/check",
-                  "host": ["{{baseUrl}}/api/licenses/check"],
+                  "host": [
+                    "{{baseUrl}}/api/licenses/check"
+                  ],
                   "path": []
                 },
                 "body": {
@@ -979,7 +1041,9 @@
                 ],
                 "url": {
                   "raw": "{{baseUrl}}/api/licenses/activate",
-                  "host": ["{{baseUrl}}/api/licenses/activate"],
+                  "host": [
+                    "{{baseUrl}}/api/licenses/activate"
+                  ],
                   "path": []
                 },
                 "body": {
@@ -1012,7 +1076,9 @@
                 ],
                 "url": {
                   "raw": "{{baseUrl}}/api/licenses/activate",
-                  "host": ["{{baseUrl}}/api/licenses/activate"],
+                  "host": [
+                    "{{baseUrl}}/api/licenses/activate"
+                  ],
                   "path": []
                 },
                 "body": {
@@ -1039,7 +1105,9 @@
                 "header": [],
                 "url": {
                   "raw": "{{baseUrl}}/api/licenses/signature/public-key",
-                  "host": ["{{baseUrl}}/api/licenses/signature/public-key"],
+                  "host": [
+                    "{{baseUrl}}/api/licenses/signature/public-key"
+                  ],
                   "path": []
                 }
               },
@@ -1073,7 +1141,9 @@
             "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/licenses/signature/public-key",
-              "host": ["{{baseUrl}}/api/licenses/signature/public-key"],
+              "host": [
+                "{{baseUrl}}/api/licenses/signature/public-key"
+              ],
               "path": []
             }
           },
@@ -1111,7 +1181,9 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/api/licenses/check",
-              "host": ["{{baseUrl}}/api/licenses/check"],
+              "host": [
+                "{{baseUrl}}/api/licenses/check"
+              ],
               "path": []
             },
             "body": {
@@ -1155,7 +1227,9 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/api/licenses/check",
-              "host": ["{{baseUrl}}/api/licenses/check"],
+              "host": [
+                "{{baseUrl}}/api/licenses/check"
+              ],
               "path": []
             },
             "body": {
@@ -1199,7 +1273,9 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/api/licenses/check",
-              "host": ["{{baseUrl}}/api/licenses/check"],
+              "host": [
+                "{{baseUrl}}/api/licenses/check"
+              ],
               "path": []
             },
             "body": {
@@ -1243,7 +1319,9 @@
             ],
             "url": {
               "raw": "{{baseUrl}}/api/licenses",
-              "host": ["{{baseUrl}}/api/licenses"],
+              "host": [
+                "{{baseUrl}}/api/licenses"
+              ],
               "path": []
             },
             "body": {
@@ -1254,6 +1332,491 @@
                   "language": "json"
                 }
               }
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Laba_4",
+      "item": [
+        {
+          "name": "Создать сигнатуру (успех)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 201', function () { pm.response.to.have.status(201); });",
+                  "var json = pm.response.json();",
+                  "pm.collectionVariables.set('signatureId', json.id || '');"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminAccessToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/signatures",
+              "host": [
+                "{{baseUrl}}/api/signatures"
+              ],
+              "path": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"threatName\": \"Trojan.Postman.A\",\n  \"firstBytesHex\": \"A1B2C3D4\",\n  \"remainderHashHex\": \"EEFF0011AA22\",\n  \"remainderLength\": 128,\n  \"fileType\": \"exe\",\n  \"offsetStart\": 0,\n  \"offsetEnd\": 64\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Создать сигнатуру (ошибка)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userAAccessToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/signatures",
+              "host": [
+                "{{baseUrl}}/api/signatures"
+              ],
+              "path": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"threatName\": \"Trojan.Postman.Denied\",\n  \"firstBytesHex\": \"A1B2\",\n  \"remainderHashHex\": \"FF11\",\n  \"remainderLength\": 1,\n  \"fileType\": \"exe\",\n  \"offsetStart\": 0,\n  \"offsetEnd\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Обновить сигнатуру (успех)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminAccessToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/signatures/{{signatureId}}",
+              "host": [
+                "{{baseUrl}}/api/signatures/{{signatureId}}"
+              ],
+              "path": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"threatName\": \"Trojan.Postman.A.Updated\",\n  \"firstBytesHex\": \"A1B2C3D4\",\n  \"remainderHashHex\": \"EEFF0011AA22\",\n  \"remainderLength\": 256,\n  \"fileType\": \"dll\",\n  \"offsetStart\": 4,\n  \"offsetEnd\": 96\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Обновить сигнатуру (ошибка)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminAccessToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/signatures/{{signatureId}}",
+              "host": [
+                "{{baseUrl}}/api/signatures/{{signatureId}}"
+              ],
+              "path": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"threatName\": \"Trojan.Bad\",\n  \"firstBytesHex\": \"A1B2C3D\",\n  \"remainderHashHex\": \"EEFF0011AA22\",\n  \"remainderLength\": 256,\n  \"fileType\": \"dll\",\n  \"offsetStart\": 100,\n  \"offsetEnd\": 10\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Удалить сигнатуру (успех)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set('sinceTs', new Date().toISOString());"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminAccessToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/signatures/{{signatureId}}",
+              "host": [
+                "{{baseUrl}}/api/signatures/{{signatureId}}"
+              ],
+              "path": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Удалить сигнатуру (ошибка)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminAccessToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/signatures/{{missingSignatureId}}",
+              "host": [
+                "{{baseUrl}}/api/signatures/{{missingSignatureId}}"
+              ],
+              "path": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Получить всю базу (успех)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userAAccessToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/signatures",
+              "host": [
+                "{{baseUrl}}/api/signatures"
+              ],
+              "path": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Получить всю базу (ошибка)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/signatures",
+              "host": [
+                "{{baseUrl}}/api/signatures"
+              ],
+              "path": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Получить инкремент (успех)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userAAccessToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/signatures/increment?since={{sinceTs}}",
+              "host": [
+                "{{baseUrl}}/api/signatures/increment?since={{sinceTs}}"
+              ],
+              "path": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Получить инкремент (ошибка)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userAAccessToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/signatures/increment",
+              "host": [
+                "{{baseUrl}}/api/signatures/increment"
+              ],
+              "path": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Получить по списку id (успех)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userAAccessToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/signatures/by-ids",
+              "host": [
+                "{{baseUrl}}/api/signatures/by-ids"
+              ],
+              "path": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ids\": [\n    \"{{signatureId}}\",\n    \"{{missingSignatureId}}\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Получить по списку id (ошибка)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userAAccessToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/signatures/by-ids",
+              "host": [
+                "{{baseUrl}}/api/signatures/by-ids"
+              ],
+              "path": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ids\": []\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Получить по id (успех)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userAAccessToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/signatures/{{signatureId}}",
+              "host": [
+                "{{baseUrl}}/api/signatures/{{signatureId}}"
+              ],
+              "path": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Получить по id (ошибка)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userAAccessToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/signatures/{{missingSignatureId}}",
+              "host": [
+                "{{baseUrl}}/api/signatures/{{missingSignatureId}}"
+              ],
+              "path": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Получить историю (успех)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminAccessToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/signatures/{{signatureId}}/history",
+              "host": [
+                "{{baseUrl}}/api/signatures/{{signatureId}}/history"
+              ],
+              "path": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Получить историю (ошибка)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userAAccessToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/signatures/{{signatureId}}/history",
+              "host": [
+                "{{baseUrl}}/api/signatures/{{signatureId}}/history"
+              ],
+              "path": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Получить аудит (успех)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminAccessToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/signatures/{{signatureId}}/audit",
+              "host": [
+                "{{baseUrl}}/api/signatures/{{signatureId}}/audit"
+              ],
+              "path": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Получить аудит (ошибка)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userAAccessToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/signatures/{{signatureId}}/audit",
+              "host": [
+                "{{baseUrl}}/api/signatures/{{signatureId}}/audit"
+              ],
+              "path": []
             }
           },
           "response": []

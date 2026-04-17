@@ -1,12 +1,4 @@
-# Задание 3.
-
-**Реализация модуля электронной цифровой подписи (ЭЦП)**
-
-1. Создать хранилище с приватным ключом и публичным сертификатом для создания и проверки подписи.
-2. Добавить хранилище с ключами в Gitlab CI/CD variables (Github secrets).
-3. Реализовать компоненты модуля ЭЦП, согласно требованиям.
-4. Подключить модуль ЭЦП к лицензии для подписания ответов.
-5. Убедиться, что подпись тикета формируется корректно.
+# Задание 4. Реализация модуля управления антивирусными сигнатурами
 
 ## Запуск
 
@@ -14,339 +6,237 @@
 mvn spring-boot:run
 ```
 
-Приложение стартует на `https://localhost:8443`.
+Приложение поднимается на `https://localhost:8443`.
 
-## Требования к паролю
-
-- минимум 8 символов;
-- минимум одна заглавная буква;
-- минимум одна строчная буква;
-- минимум одна цифра;
-- минимум один спецсимвол.
-
-## Основные endpoint-ы
-
-### Регистрация
-
-```bash
-curl -k -X POST "https://localhost:8443/api/auth/register" \
-  -H "Content-Type: application/json" \
-  -d '{"username":"user1","password":"User123!","role":"USER"}'
-```
-
-### Логин
-
-```bash
-TOKENS=$(curl -k -s -X POST "https://localhost:8443/api/auth/login" \
-  -H "Content-Type: application/json" \
-  -d '{"username":"user1","password":"User123!"}')
-
-ACCESS=$(echo "$TOKENS" | jq -r '.accessToken')
-REFRESH=$(echo "$TOKENS" | jq -r '.refreshToken')
-```
-
-### Обновление пары токенов
-
-```bash
-curl -k -X POST "https://localhost:8443/api/auth/refresh" \
-  -H "Content-Type: application/json" \
-  -d "{\"refreshToken\":\"$REFRESH\"}"
-```
-
-### Профиль текущего пользователя
-
-```bash
-curl -k -H "Authorization: Bearer $ACCESS" \
-  "https://localhost:8443/api/users/me"
-```
-
-### Проверка защищённого endpoint-а
-
-```bash
-curl -k -H "Authorization: Bearer $ACCESS" \
-  "https://localhost:8443/api/system/ping"
-```
-
-### Endpoint только для ADMIN
-
-```bash
-curl -k -H "Authorization: Bearer $ACCESS" \
-  "https://localhost:8443/api/system/admin"
-```
-
-### Список пользователей для ADMIN
-
-```bash
-curl -k -H "Authorization: Bearer $ACCESS" \
-  "https://localhost:8443/api/users"
-```
-
-## Проверка refresh-ротации
-
-```bash
-OLD_REFRESH="$REFRESH"
-
-TOKENS=$(curl -k -s -X POST "https://localhost:8443/api/auth/refresh" \
-  -H "Content-Type: application/json" \
-  -d "{\"refreshToken\":\"$REFRESH\"}")
-
-REFRESH=$(echo "$TOKENS" | jq -r '.refreshToken')
-
-curl -k -i -X POST "https://localhost:8443/api/auth/refresh" \
-  -H "Content-Type: application/json" \
-  -d "{\"refreshToken\":\"$OLD_REFRESH\"}"
-```
-
-Ожидаемо старый refresh перестаёт работать, потому что предыдущая сессия переводится в статус REFRESHED.
-
-## Модуль лицензий (Задание 2)
-
-### Подготовка пользователей и токенов
+## Подготовка пользователей и токенов
 
 ```bash
 BASE_URL="https://localhost:8443"
 
 ADMIN_REG=$(curl -k -s -X POST "$BASE_URL/api/auth/register" \
   -H "Content-Type: application/json" \
-  -d '{"username":"admin_lic","password":"Admin123!","role":"ADMIN"}')
-USER_A_REG=$(curl -k -s -X POST "$BASE_URL/api/auth/register" \
-  -H "Content-Type: application/json" \
-  -d '{"username":"user_a","password":"User123!","role":"USER"}')
-USER_B_REG=$(curl -k -s -X POST "$BASE_URL/api/auth/register" \
-  -H "Content-Type: application/json" \
-  -d '{"username":"user_b","password":"User123!","role":"USER"}')
+  -d '{"username":"admin_sig","password":"Admin123!","role":"ADMIN"}')
 
-ADMIN_ID=$(echo "$ADMIN_REG" | jq -r '.id')
-USER_A_ID=$(echo "$USER_A_REG" | jq -r '.id')
-USER_B_ID=$(echo "$USER_B_REG" | jq -r '.id')
+USER_REG=$(curl -k -s -X POST "$BASE_URL/api/auth/register" \
+  -H "Content-Type: application/json" \
+  -d '{"username":"user_sig","password":"User123!","role":"USER"}')
 
 ADMIN_TOKENS=$(curl -k -s -X POST "$BASE_URL/api/auth/login" \
   -H "Content-Type: application/json" \
-  -d '{"username":"admin_lic","password":"Admin123!"}')
-USER_A_TOKENS=$(curl -k -s -X POST "$BASE_URL/api/auth/login" \
+  -d '{"username":"admin_sig","password":"Admin123!"}')
+
+USER_TOKENS=$(curl -k -s -X POST "$BASE_URL/api/auth/login" \
   -H "Content-Type: application/json" \
-  -d '{"username":"user_a","password":"User123!"}')
-USER_B_TOKENS=$(curl -k -s -X POST "$BASE_URL/api/auth/login" \
-  -H "Content-Type: application/json" \
-  -d '{"username":"user_b","password":"User123!"}')
+  -d '{"username":"user_sig","password":"User123!"}')
 
 ADMIN_ACCESS=$(echo "$ADMIN_TOKENS" | jq -r '.accessToken')
-USER_A_ACCESS=$(echo "$USER_A_TOKENS" | jq -r '.accessToken')
-USER_B_ACCESS=$(echo "$USER_B_TOKENS" | jq -r '.accessToken')
+USER_ACCESS=$(echo "$USER_TOKENS" | jq -r '.accessToken')
 ```
 
-### Каталог продуктов и типов лицензий
+## 1) Добавление сигнатуры
+
+### create (успех)
 
 ```bash
-PRODUCTS=$(curl -k -s "$BASE_URL/api/licenses/catalog/products" \
-  -H "Authorization: Bearer $ADMIN_ACCESS")
-TYPES=$(curl -k -s "$BASE_URL/api/licenses/catalog/types" \
-  -H "Authorization: Bearer $ADMIN_ACCESS")
-
-echo "$PRODUCTS" | jq
-echo "$TYPES" | jq
-
-PRODUCT_ID=$(echo "$PRODUCTS" | jq -r '.[0].id')
-TYPE_TRIAL_ID=$(echo "$TYPES" | jq -r '.[] | select(.name=="TRIAL") | .id' | head -n1)
-```
-
-### Создание лицензии администратором
-
-```bash
-LICENSE_A=$(curl -k -s -X POST "$BASE_URL/api/licenses" \
+CREATE_RESPONSE=$(curl -k -s -X POST "$BASE_URL/api/signatures" \
   -H "Authorization: Bearer $ADMIN_ACCESS" \
   -H "Content-Type: application/json" \
-  -d "{
-    \"productId\": $PRODUCT_ID,
-    \"typeId\": $TYPE_TRIAL_ID,
-    \"ownerId\": $USER_A_ID,
-    \"deviceCount\": 2,
-    \"description\": \"License for user_a\"
-  }")
+  -d '{
+    "threatName": "Trojan.Example.A",
+    "firstBytesHex": "A1B2C3D4",
+    "remainderHashHex": "EEFF0011AA22",
+    "remainderLength": 128,
+    "fileType": "exe",
+    "offsetStart": 0,
+    "offsetEnd": 64
+  }')
 
-echo "$LICENSE_A" | jq
-KEY_A=$(echo "$LICENSE_A" | jq -r '.code')
+echo "$CREATE_RESPONSE" | jq
+SIGNATURE_ID=$(echo "$CREATE_RESPONSE" | jq -r '.id')
 ```
 
-### Активация лицензии владельцем (успешно)
+### create (ошибка, USER не может)
 
 ```bash
-ACTIVATE_A=$(curl -k -s -X POST "$BASE_URL/api/licenses/activate" \
-  -H "Authorization: Bearer $USER_A_ACCESS" \
+curl -k -i -X POST "$BASE_URL/api/signatures" \
+  -H "Authorization: Bearer $USER_ACCESS" \
   -H "Content-Type: application/json" \
-  -d "{
-    \"activationKey\": \"$KEY_A\",
-    \"deviceName\": \"UserA-Laptop\",
-    \"deviceMac\": \"AA:BB:CC:DD:EE:01\"
-  }")
-
-echo "$ACTIVATE_A" | jq
+  -d '{
+    "threatName": "Trojan.Example.Denied",
+    "firstBytesHex": "A1B2",
+    "remainderHashHex": "FF11",
+    "remainderLength": 1,
+    "fileType": "exe",
+    "offsetStart": 0,
+    "offsetEnd": 1
+  }'
 ```
 
-### Проверка лицензии на устройстве владельца (успешно)
+## 2) Обновление сигнатуры
+
+### update (успех)
 
 ```bash
-curl -k -s -X POST "$BASE_URL/api/licenses/check" \
-  -H "Authorization: Bearer $USER_A_ACCESS" \
-  -H "Content-Type: application/json" \
-  -d "{
-    \"productId\": $PRODUCT_ID,
-    \"deviceMac\": \"AA:BB:CC:DD:EE:01\"
-  }" | jq
-```
-
-### Негативный кейс: чужой пользователь активирует чужой ключ (ожидаемо 403)
-
-```bash
-curl -k -i -X POST "$BASE_URL/api/licenses/activate" \
-  -H "Authorization: Bearer $USER_B_ACCESS" \
-  -H "Content-Type: application/json" \
-  -d "{
-    \"activationKey\": \"$KEY_A\",
-    \"deviceName\": \"UserB-PC\",
-    \"deviceMac\": \"AA:BB:CC:DD:EE:02\"
-  }"
-```
-
-### Негативный кейс: проверка чужого устройства (ожидаемо 403)
-
-```bash
-curl -k -i -X POST "$BASE_URL/api/licenses/check" \
-  -H "Authorization: Bearer $USER_B_ACCESS" \
-  -H "Content-Type: application/json" \
-  -d "{
-    \"productId\": $PRODUCT_ID,
-    \"deviceMac\": \"AA:BB:CC:DD:EE:01\"
-  }"
-```
-
-### Негативный кейс: лимит устройств (ожидаемо 409 на второй активации)
-
-```bash
-LICENSE_LIMIT=$(curl -k -s -X POST "$BASE_URL/api/licenses" \
+UPDATE_RESPONSE=$(curl -k -s -X PUT "$BASE_URL/api/signatures/$SIGNATURE_ID" \
   -H "Authorization: Bearer $ADMIN_ACCESS" \
   -H "Content-Type: application/json" \
-  -d "{
-    \"productId\": $PRODUCT_ID,
-    \"typeId\": $TYPE_TRIAL_ID,
-    \"ownerId\": $USER_A_ID,
-    \"deviceCount\": 1,
-    \"description\": \"One-device license\"
-  }")
+  -d '{
+    "threatName": "Trojan.Example.A.Updated",
+    "firstBytesHex": "A1B2C3D4",
+    "remainderHashHex": "EEFF0011AA22",
+    "remainderLength": 256,
+    "fileType": "dll",
+    "offsetStart": 4,
+    "offsetEnd": 96
+  }')
 
-KEY_LIMIT=$(echo "$LICENSE_LIMIT" | jq -r '.code')
+echo "$UPDATE_RESPONSE" | jq
+```
 
-curl -k -s -X POST "$BASE_URL/api/licenses/activate" \
-  -H "Authorization: Bearer $USER_A_ACCESS" \
+### update (ошибка, offsetEnd < offsetStart)
+
+```bash
+curl -k -i -X PUT "$BASE_URL/api/signatures/$SIGNATURE_ID" \
+  -H "Authorization: Bearer $ADMIN_ACCESS" \
   -H "Content-Type: application/json" \
-  -d "{
-    \"activationKey\": \"$KEY_LIMIT\",
-    \"deviceName\": \"UserA-Phone\",
-    \"deviceMac\": \"AA:BB:CC:DD:EE:03\"
-  }" | jq
+  -d '{
+    "threatName": "Trojan.Bad",
+    "firstBytesHex": "A1B2C3D4",
+    "remainderHashHex": "EEFF0011AA22",
+    "remainderLength": 256,
+    "fileType": "dll",
+    "offsetStart": 100,
+    "offsetEnd": 10
+  }'
+```
 
-curl -k -i -X POST "$BASE_URL/api/licenses/activate" \
-  -H "Authorization: Bearer $USER_A_ACCESS" \
+## 3) Логическое удаление
+
+### delete (успех)
+
+```bash
+DELETE_SINCE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+curl -k -i -X DELETE "$BASE_URL/api/signatures/$SIGNATURE_ID" \
+  -H "Authorization: Bearer $ADMIN_ACCESS"
+```
+
+### delete (ошибка, несуществующий id)
+
+```bash
+curl -k -i -X DELETE "$BASE_URL/api/signatures/11111111-1111-1111-1111-111111111111" \
+  -H "Authorization: Bearer $ADMIN_ACCESS"
+```
+
+## 4) Получение всей базы
+
+### get all (успех, только ACTUAL)
+
+```bash
+curl -k -s "$BASE_URL/api/signatures" \
+  -H "Authorization: Bearer $USER_ACCESS" | jq
+```
+
+### get all (ошибка, без токена)
+
+```bash
+curl -k -i "$BASE_URL/api/signatures"
+```
+
+## 5) Получение инкремента
+
+### increment (успех, включает DELETED)
+
+```bash
+curl -k -s "$BASE_URL/api/signatures/increment?since=$DELETE_SINCE" \
+  -H "Authorization: Bearer $USER_ACCESS" | jq
+```
+
+### increment (ошибка, нет since)
+
+```bash
+curl -k -i "$BASE_URL/api/signatures/increment" \
+  -H "Authorization: Bearer $USER_ACCESS"
+```
+
+## 6) Получение по идентификаторам
+
+### by-ids (успех)
+
+```bash
+curl -k -s -X POST "$BASE_URL/api/signatures/by-ids" \
+  -H "Authorization: Bearer $USER_ACCESS" \
   -H "Content-Type: application/json" \
-  -d "{
-    \"activationKey\": \"$KEY_LIMIT\",
-    \"deviceName\": \"UserA-Tablet\",
-    \"deviceMac\": \"AA:BB:CC:DD:EE:04\"
-  }"
+  -d "{\"ids\":[\"$SIGNATURE_ID\",\"11111111-1111-1111-1111-111111111111\"]}" | jq
 ```
 
-### Продление лицензии (TRIAL, успешно при сроке <= 7 дней)
+### by-ids (ошибка, пустой список)
 
 ```bash
-curl -k -s -X POST "$BASE_URL/api/licenses/renew" \
-  -H "Authorization: Bearer $USER_A_ACCESS" \
+curl -k -i -X POST "$BASE_URL/api/signatures/by-ids" \
+  -H "Authorization: Bearer $USER_ACCESS" \
   -H "Content-Type: application/json" \
-  -d "{
-    \"activationKey\": \"$KEY_A\",
-    \"deviceMac\": \"AA:BB:CC:DD:EE:01\"
-  }" | jq
+  -d '{"ids":[]}'
 ```
 
-## Lab_3 (ЭЦП): запросы и проверки
+## 7) Получение по одному id
 
-### 1) Получить публичный ключ и сертификат подписи (успешно, 200)
+### get by id (успех)
 
 ```bash
-curl -k -i -s "$BASE_URL/api/licenses/signature/public-key" | sed -n '1,40p'
+curl -k -s "$BASE_URL/api/signatures/$SIGNATURE_ID" \
+  -H "Authorization: Bearer $USER_ACCESS" | jq
 ```
 
-### 2) Получить подписанный Ticket (успешно, 200)
+### get by id (ошибка, не найдено)
 
 ```bash
-TICKET_RESPONSE=$(curl -k -s -X POST "$BASE_URL/api/licenses/check" \
-  -H "Authorization: Bearer $USER_A_ACCESS" \
-  -H "Content-Type: application/json" \
-  -d "{
-    \"productId\": $PRODUCT_ID,
-    \"deviceMac\": \"AA:BB:CC:DD:EE:01\"
-  }")
-
-echo "$TICKET_RESPONSE" | jq
+curl -k -i "$BASE_URL/api/signatures/11111111-1111-1111-1111-111111111111" \
+  -H "Authorization: Bearer $USER_ACCESS"
 ```
 
-### 3) Проверка подписи тикета через OpenSSL (успешно)
+## 8) Получение истории по signatureId
+
+### history (успех, ADMIN)
 
 ```bash
-SIGNATURE_B64=$(echo "$TICKET_RESPONSE" | jq -r '.signature')
-echo "$TICKET_RESPONSE" | jq -S -c '.ticket' > /tmp/ticket.json
-echo "$SIGNATURE_B64" | base64 -d > /tmp/ticket.sig
-
-PUB_INFO=$(curl -k -s "$BASE_URL/api/licenses/signature/public-key")
-echo "$PUB_INFO" | jq -r '.certificatePem' > /tmp/ticket_cert.pem
-openssl x509 -in /tmp/ticket_cert.pem -pubkey -noout > /tmp/ticket_pub.pem
-
-openssl dgst -sha256 -verify /tmp/ticket_pub.pem -signature /tmp/ticket.sig /tmp/ticket.json
+curl -k -s "$BASE_URL/api/signatures/$SIGNATURE_ID/history" \
+  -H "Authorization: Bearer $ADMIN_ACCESS" | jq
 ```
 
-### 4) изменённый Ticket (проверка должна упасть)
+### history (ошибка, USER запрещено)
 
 ```bash
-cp /tmp/ticket.json /tmp/ticket_tampered.json
-sed -i '' 's/"licenseBlocked":false/"licenseBlocked":true/' /tmp/ticket_tampered.json
-
-openssl dgst -sha256 -verify /tmp/ticket_pub.pem -signature /tmp/ticket.sig /tmp/ticket_tampered.json
+curl -k -i "$BASE_URL/api/signatures/$SIGNATURE_ID/history" \
+  -H "Authorization: Bearer $USER_ACCESS"
 ```
 
-### 5)check лицензии чужим пользователем (ошибка 403)
+## 9) Получение аудита по signatureId
+
+### audit (успех, ADMIN)
 
 ```bash
-curl -k -i -X POST "$BASE_URL/api/licenses/check" \
-  -H "Authorization: Bearer $USER_B_ACCESS" \
-  -H "Content-Type: application/json" \
-  -d "{
-    \"productId\": $PRODUCT_ID,
-    \"deviceMac\": \"AA:BB:CC:DD:EE:01\"
-  }"
+curl -k -s "$BASE_URL/api/signatures/$SIGNATURE_ID/audit" \
+  -H "Authorization: Bearer $ADMIN_ACCESS" | jq
 ```
 
-### 6) check с некорректным MAC (ошибка 400)
+### audit (ошибка, USER запрещено)
 
 ```bash
-curl -k -i -X POST "$BASE_URL/api/licenses/check" \
-  -H "Authorization: Bearer $USER_A_ACCESS" \
-  -H "Content-Type: application/json" \
-  -d "{
-    \"productId\": $PRODUCT_ID,
-    \"deviceMac\": \"NOT_A_MAC\"
-  }"
+curl -k -i "$BASE_URL/api/signatures/$SIGNATURE_ID/audit" \
+  -H "Authorization: Bearer $USER_ACCESS"
 ```
 
-### 7) создание лицензии пользователем USER (ошибка 403)
+## Проверка ЭЦП
+
+Подпись хранится в `digitalSignatureBase64` и пересчитывается при:
+
+- `POST /api/signatures`
+- `PUT /api/signatures/{id}`
+- `DELETE /api/signatures/{id}` (при смене `status` на `DELETED`).
+
+Публичный ключ и сертификат для проверки:
 
 ```bash
-curl -k -i -X POST "$BASE_URL/api/licenses" \
-  -H "Authorization: Bearer $USER_A_ACCESS" \
-  -H "Content-Type: application/json" \
-  -d "{
-    \"productId\": $PRODUCT_ID,
-    \"typeId\": $TYPE_TRIAL_ID,
-    \"ownerId\": $USER_A_ID,
-    \"deviceCount\": 1,
-    \"description\": \"Should be denied for USER role\"
-  }"
+curl -k -s "$BASE_URL/api/licenses/signature/public-key" | jq
 ```

@@ -39,6 +39,7 @@ build/
 # TLS secrets
 src/main/resources/certs/*.p12
 *.p12
+!src/test/resources/*.p12
 *.key
 secrets/*
 
