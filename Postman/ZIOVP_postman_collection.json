@@ -1,0 +1,2112 @@
+{
+  "info": {
+    "_postman_id": "e09c2f05-27ca-4116-b10a-ab4675d87e1d",
+    "name": "ZIOVP",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "accessToken",
+      "value": ""
+    },
+    {
+      "key": "adminAccessToken",
+      "value": ""
+    },
+    {
+      "key": "adminId",
+      "value": ""
+    },
+    {
+      "key": "baseUrl",
+      "value": "https://localhost:8443"
+    },
+    {
+      "key": "licenseAKey",
+      "value": ""
+    },
+    {
+      "key": "licenseLimitKey",
+      "value": ""
+    },
+    {
+      "key": "missingSignatureId",
+      "value": "11111111-1111-1111-1111-111111111111"
+    },
+    {
+      "key": "oldRefreshToken",
+      "value": ""
+    },
+    {
+      "key": "productId",
+      "value": ""
+    },
+    {
+      "key": "refreshToken",
+      "value": ""
+    },
+    {
+      "key": "signatureCertificatePem",
+      "value": ""
+    },
+    {
+      "key": "signatureId",
+      "value": ""
+    },
+    {
+      "key": "signaturePublicKeyBase64",
+      "value": ""
+    },
+    {
+      "key": "sinceTs",
+      "value": "2026-01-01T00:00:00Z"
+    },
+    {
+      "key": "ticketPayload",
+      "value": ""
+    },
+    {
+      "key": "ticketSignature",
+      "value": ""
+    },
+    {
+      "key": "typeTrialId",
+      "value": ""
+    },
+    {
+      "key": "userAAccessToken",
+      "value": ""
+    },
+    {
+      "key": "userAId",
+      "value": ""
+    },
+    {
+      "key": "userBAccessToken",
+      "value": ""
+    },
+    {
+      "key": "userBId",
+      "value": ""
+    },
+    {
+      "key": "signatureId2",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Аутентификация",
+      "item": [
+        {
+          "name": "Регистрация",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": [
+                "{{baseUrl}}/api/auth/register"
+              ],
+              "path": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"user1\",\n  \"password\": \"User123!\",\n  \"role\": \"USER\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Логин",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": [
+                "{{baseUrl}}/api/auth/login"
+              ],
+              "path": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"user1\",\n  \"password\": \"User123!\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "pm.collectionVariables.set('accessToken', json.accessToken || '');",
+                  "pm.collectionVariables.set('refreshToken', json.refreshToken || '');"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Обновление пары токенов",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/refresh",
+              "host": [
+                "{{baseUrl}}/api/auth/refresh"
+              ],
+              "path": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "pm.collectionVariables.set('accessToken', json.accessToken || '');",
+                  "pm.collectionVariables.set('refreshToken', json.refreshToken || '');"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Профиль текущего пользователя",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/users/me",
+              "host": [
+                "{{baseUrl}}/api/users/me"
+              ],
+              "path": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Проверка защищённого endpoint-а",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/system/ping",
+              "host": [
+                "{{baseUrl}}/api/system/ping"
+              ],
+              "path": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Endpoint только для ADMIN",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/system/admin",
+              "host": [
+                "{{baseUrl}}/api/system/admin"
+              ],
+              "path": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Список пользователей для ADMIN",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/users",
+              "host": [
+                "{{baseUrl}}/api/users"
+              ],
+              "path": []
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Проверка refresh-ротации",
+      "item": [
+        {
+          "name": "Сохранение старого refresh токена",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/system/ping",
+              "host": [
+                "{{baseUrl}}/api/system/ping"
+              ],
+              "path": []
+            },
+            "description": "Технический шаг для сохранения текущего refreshToken перед ротацией."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set('oldRefreshToken', pm.collectionVariables.get('refreshToken'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Обновление пары токенов и ротация refresh",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/refresh",
+              "host": [
+                "{{baseUrl}}/api/auth/refresh"
+              ],
+              "path": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const json = pm.response.json();",
+                  "pm.collectionVariables.set('accessToken', json.accessToken || '');",
+                  "pm.collectionVariables.set('refreshToken', json.refreshToken || '');"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Повторное использование старого refresh токена (ожидаемо ошибка)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/refresh",
+              "host": [
+                "{{baseUrl}}/api/auth/refresh"
+              ],
+              "path": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{oldRefreshToken}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Модуль лицензий (Задание 2)",
+      "item": [
+        {
+          "name": "Подготовка пользователей и токенов",
+          "item": [
+            {
+              "name": "Регистрация ADMIN",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/register",
+                  "host": [
+                    "{{baseUrl}}/api/auth/register"
+                  ],
+                  "path": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"admin_lic\",\n  \"password\": \"Admin123!\",\n  \"role\": \"ADMIN\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const json = pm.response.json();",
+                      "pm.collectionVariables.set('adminId', json.id || '');"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Регистрация USER_A",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/register",
+                  "host": [
+                    "{{baseUrl}}/api/auth/register"
+                  ],
+                  "path": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"user_a\",\n  \"password\": \"User123!\",\n  \"role\": \"USER\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const json = pm.response.json();",
+                      "pm.collectionVariables.set('userAId', json.id || '');"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Регистрация USER_B",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/register",
+                  "host": [
+                    "{{baseUrl}}/api/auth/register"
+                  ],
+                  "path": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"user_b\",\n  \"password\": \"User123!\",\n  \"role\": \"USER\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const json = pm.response.json();",
+                      "pm.collectionVariables.set('userBId', json.id || '');"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Логин ADMIN",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/login",
+                  "host": [
+                    "{{baseUrl}}/api/auth/login"
+                  ],
+                  "path": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"admin_lic\",\n  \"password\": \"Admin123!\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const json = pm.response.json();",
+                      "pm.collectionVariables.set('adminAccessToken', json.accessToken || '');"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Логин USER_A",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/login",
+                  "host": [
+                    "{{baseUrl}}/api/auth/login"
+                  ],
+                  "path": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"user_a\",\n  \"password\": \"User123!\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const json = pm.response.json();",
+                      "pm.collectionVariables.set('userAAccessToken', json.accessToken || '');"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Логин USER_B",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/auth/login",
+                  "host": [
+                    "{{baseUrl}}/api/auth/login"
+                  ],
+                  "path": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"username\": \"user_b\",\n  \"password\": \"User123!\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const json = pm.response.json();",
+                      "pm.collectionVariables.set('userBAccessToken', json.accessToken || '');"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Каталог продуктов и типов лицензий",
+          "item": [
+            {
+              "name": "Получение каталога продуктов",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{adminAccessToken}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/licenses/catalog/products",
+                  "host": [
+                    "{{baseUrl}}/api/licenses/catalog/products"
+                  ],
+                  "path": []
+                }
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const json = pm.response.json();",
+                      "if (Array.isArray(json) && json.length > 0) { pm.collectionVariables.set('productId', json[0].id); }"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Получение каталога типов лицензий",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{adminAccessToken}}",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/licenses/catalog/types",
+                  "host": [
+                    "{{baseUrl}}/api/licenses/catalog/types"
+                  ],
+                  "path": []
+                }
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const json = pm.response.json();",
+                      "if (Array.isArray(json)) {",
+                      "  const trial = json.find(x => x.name === 'TRIAL');",
+                      "  if (trial) pm.collectionVariables.set('typeTrialId', trial.id);",
+                      "}"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Создание лицензий администратором",
+          "item": [
+            {
+              "name": "Создание лицензии администратором",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{adminAccessToken}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/licenses",
+                  "host": [
+                    "{{baseUrl}}/api/licenses"
+                  ],
+                  "path": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"productId\": {{productId}},\n  \"typeId\": {{typeTrialId}},\n  \"ownerId\": {{userAId}},\n  \"deviceCount\": 2,\n  \"description\": \"License for user_a\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const json = pm.response.json();",
+                      "pm.collectionVariables.set('licenseAKey', json.code || '');"
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "Создание лицензии с лимитом в 1 устройство",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{adminAccessToken}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/licenses",
+                  "host": [
+                    "{{baseUrl}}/api/licenses"
+                  ],
+                  "path": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"productId\": {{productId}},\n  \"typeId\": {{typeTrialId}},\n  \"ownerId\": {{userAId}},\n  \"deviceCount\": 1,\n  \"description\": \"One-device license\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": [],
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const json = pm.response.json();",
+                      "pm.collectionVariables.set('licenseLimitKey', json.code || '');"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name": "Операции пользователя",
+          "item": [
+            {
+              "name": "Активация лицензии владельцем (успешно)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{userAAccessToken}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/licenses/activate",
+                  "host": [
+                    "{{baseUrl}}/api/licenses/activate"
+                  ],
+                  "path": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"activationKey\": \"{{licenseAKey}}\",\n  \"deviceName\": \"UserA-Laptop\",\n  \"deviceMac\": \"AA:BB:CC:DD:EE:01\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Проверка лицензии на устройстве владельца (успешно)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{userAAccessToken}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/licenses/check",
+                  "host": [
+                    "{{baseUrl}}/api/licenses/check"
+                  ],
+                  "path": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"productId\": {{productId}},\n  \"deviceMac\": \"AA:BB:CC:DD:EE:01\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Продление лицензии (TRIAL, успешно при сроке <= 7 дней)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{userAAccessToken}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/licenses/renew",
+                  "host": [
+                    "{{baseUrl}}/api/licenses/renew"
+                  ],
+                  "path": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"activationKey\": \"{{licenseAKey}}\",\n  \"deviceMac\": \"AA:BB:CC:DD:EE:01\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Негативные кейсы",
+          "item": [
+            {
+              "name": "чужой пользователь активирует чужой ключ (ожидаемо 403)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{userBAccessToken}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/licenses/activate",
+                  "host": [
+                    "{{baseUrl}}/api/licenses/activate"
+                  ],
+                  "path": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"activationKey\": \"{{licenseAKey}}\",\n  \"deviceName\": \"UserB-PC\",\n  \"deviceMac\": \"AA:BB:CC:DD:EE:02\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "проверка чужого устройства (ожидаемо 403)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{userBAccessToken}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/licenses/check",
+                  "host": [
+                    "{{baseUrl}}/api/licenses/check"
+                  ],
+                  "path": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"productId\": {{productId}},\n  \"deviceMac\": \"AA:BB:CC:DD:EE:01\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Активация лицензии с лимитом 1 устройство: первое устройство",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{userAAccessToken}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/licenses/activate",
+                  "host": [
+                    "{{baseUrl}}/api/licenses/activate"
+                  ],
+                  "path": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"activationKey\": \"{{licenseLimitKey}}\",\n  \"deviceName\": \"UserA-Phone\",\n  \"deviceMac\": \"AA:BB:CC:DD:EE:03\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "лимит устройств (ожидаемо 409 на второй активации)",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{userAAccessToken}}",
+                    "type": "text"
+                  },
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json",
+                    "type": "text"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/licenses/activate",
+                  "host": [
+                    "{{baseUrl}}/api/licenses/activate"
+                  ],
+                  "path": []
+                },
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"activationKey\": \"{{licenseLimitKey}}\",\n  \"deviceName\": \"UserA-Tablet\",\n  \"deviceMac\": \"AA:BB:CC:DD:EE:04\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "ЭЦП тикета",
+          "item": [
+            {
+              "name": "ЭЦП тикета: получение публичного ключа сервера",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/licenses/signature/public-key",
+                  "host": [
+                    "{{baseUrl}}/api/licenses/signature/public-key"
+                  ],
+                  "path": []
+                }
+              },
+              "response": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Lab_3 (ЭЦП)",
+      "item": [
+        {
+          "name": "Получить публичный ключ и сертификат (успешно, 200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function () { pm.response.to.have.status(200); });",
+                  "const json = pm.response.json();",
+                  "pm.collectionVariables.set('signaturePublicKeyBase64', json.publicKeyBase64 || '');",
+                  "pm.collectionVariables.set('signatureCertificatePem', json.certificatePem || '');"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/licenses/signature/public-key",
+              "host": [
+                "{{baseUrl}}/api/licenses/signature/public-key"
+              ],
+              "path": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Получить подписанный Ticket (успешно, 200)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function () { pm.response.to.have.status(200); });",
+                  "const json = pm.response.json();",
+                  "pm.collectionVariables.set('ticketSignature', json.signature || '');",
+                  "pm.collectionVariables.set('ticketPayload', JSON.stringify(json.ticket || {}));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userAAccessToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/licenses/check",
+              "host": [
+                "{{baseUrl}}/api/licenses/check"
+              ],
+              "path": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productId\": {{productId}},\n  \"deviceMac\": \"AA:BB:CC:DD:EE:01\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "check лицензии чужим пользователем (ожидаемо 403)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 403', function () { pm.response.to.have.status(403); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userBAccessToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/licenses/check",
+              "host": [
+                "{{baseUrl}}/api/licenses/check"
+              ],
+              "path": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productId\": {{productId}},\n  \"deviceMac\": \"AA:BB:CC:DD:EE:01\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "check с некорректным MAC (ожидаемо 400)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 400', function () { pm.response.to.have.status(400); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userAAccessToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/licenses/check",
+              "host": [
+                "{{baseUrl}}/api/licenses/check"
+              ],
+              "path": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productId\": {{productId}},\n  \"deviceMac\": \"NOT_A_MAC\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "создание лицензии пользователем USER (ожидаемо 403)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 403', function () { pm.response.to.have.status(403); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userAAccessToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/licenses",
+              "host": [
+                "{{baseUrl}}/api/licenses"
+              ],
+              "path": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productId\": {{productId}},\n  \"typeId\": {{typeTrialId}},\n  \"ownerId\": {{userAId}},\n  \"deviceCount\": 1,\n  \"description\": \"Should fail for USER role\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Laba_4",
+      "item": [
+        {
+          "name": "Создать сигнатуру (успех)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 201', function () { pm.response.to.have.status(201); });",
+                  "var json = pm.response.json();",
+                  "pm.collectionVariables.set('signatureId', json.id || '');"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminAccessToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/signatures",
+              "host": [
+                "{{baseUrl}}/api/signatures"
+              ],
+              "path": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"threatName\": \"Trojan.Postman.A\",\n  \"firstBytesHex\": \"A1B2C3D4\",\n  \"remainderHashHex\": \"EEFF0011AA22\",\n  \"remainderLength\": 128,\n  \"fileType\": \"exe\",\n  \"offsetStart\": 0,\n  \"offsetEnd\": 64\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Создать сигнатуру (ошибка)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userAAccessToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/signatures",
+              "host": [
+                "{{baseUrl}}/api/signatures"
+              ],
+              "path": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"threatName\": \"Trojan.Postman.Denied\",\n  \"firstBytesHex\": \"A1B2\",\n  \"remainderHashHex\": \"FF11\",\n  \"remainderLength\": 1,\n  \"fileType\": \"exe\",\n  \"offsetStart\": 0,\n  \"offsetEnd\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Обновить сигнатуру (успех)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminAccessToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/signatures/{{signatureId}}",
+              "host": [
+                "{{baseUrl}}/api/signatures/{{signatureId}}"
+              ],
+              "path": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"threatName\": \"Trojan.Postman.A.Updated\",\n  \"firstBytesHex\": \"A1B2C3D4\",\n  \"remainderHashHex\": \"EEFF0011AA22\",\n  \"remainderLength\": 256,\n  \"fileType\": \"dll\",\n  \"offsetStart\": 4,\n  \"offsetEnd\": 96\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Обновить сигнатуру (ошибка)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminAccessToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/signatures/{{signatureId}}",
+              "host": [
+                "{{baseUrl}}/api/signatures/{{signatureId}}"
+              ],
+              "path": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"threatName\": \"Trojan.Bad\",\n  \"firstBytesHex\": \"A1B2C3D\",\n  \"remainderHashHex\": \"EEFF0011AA22\",\n  \"remainderLength\": 256,\n  \"fileType\": \"dll\",\n  \"offsetStart\": 100,\n  \"offsetEnd\": 10\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Удалить сигнатуру (успех)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set('sinceTs', new Date().toISOString());"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminAccessToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/signatures/{{signatureId}}",
+              "host": [
+                "{{baseUrl}}/api/signatures/{{signatureId}}"
+              ],
+              "path": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Удалить сигнатуру (ошибка)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminAccessToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/signatures/{{missingSignatureId}}",
+              "host": [
+                "{{baseUrl}}/api/signatures/{{missingSignatureId}}"
+              ],
+              "path": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Получить всю базу (успех)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userAAccessToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/signatures",
+              "host": [
+                "{{baseUrl}}/api/signatures"
+              ],
+              "path": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Получить всю базу (ошибка)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/signatures",
+              "host": [
+                "{{baseUrl}}/api/signatures"
+              ],
+              "path": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Получить инкремент (успех)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userAAccessToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/signatures/increment?since={{sinceTs}}",
+              "host": [
+                "{{baseUrl}}/api/signatures/increment?since={{sinceTs}}"
+              ],
+              "path": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Получить инкремент (ошибка)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userAAccessToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/signatures/increment",
+              "host": [
+                "{{baseUrl}}/api/signatures/increment"
+              ],
+              "path": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Получить по списку id (успех)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userAAccessToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/signatures/by-ids",
+              "host": [
+                "{{baseUrl}}/api/signatures/by-ids"
+              ],
+              "path": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ids\": [\n    \"{{signatureId}}\",\n    \"{{missingSignatureId}}\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Получить по списку id (ошибка)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userAAccessToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/signatures/by-ids",
+              "host": [
+                "{{baseUrl}}/api/signatures/by-ids"
+              ],
+              "path": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ids\": []\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Получить по id (успех)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userAAccessToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/signatures/{{signatureId}}",
+              "host": [
+                "{{baseUrl}}/api/signatures/{{signatureId}}"
+              ],
+              "path": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Получить по id (ошибка)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userAAccessToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/signatures/{{missingSignatureId}}",
+              "host": [
+                "{{baseUrl}}/api/signatures/{{missingSignatureId}}"
+              ],
+              "path": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Получить историю (успех)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminAccessToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/signatures/{{signatureId}}/history",
+              "host": [
+                "{{baseUrl}}/api/signatures/{{signatureId}}/history"
+              ],
+              "path": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Получить историю (ошибка)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userAAccessToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/signatures/{{signatureId}}/history",
+              "host": [
+                "{{baseUrl}}/api/signatures/{{signatureId}}/history"
+              ],
+              "path": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Получить аудит (успех)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminAccessToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/signatures/{{signatureId}}/audit",
+              "host": [
+                "{{baseUrl}}/api/signatures/{{signatureId}}/audit"
+              ],
+              "path": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Получить аудит (ошибка)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userAAccessToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/signatures/{{signatureId}}/audit",
+              "host": [
+                "{{baseUrl}}/api/signatures/{{signatureId}}/audit"
+              ],
+              "path": []
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Lab_5",
+      "item": [
+        {
+          "name": "Создать сигнатуру #1 (успех)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 201', function () { pm.response.to.have.status(201); });",
+                  "const json = pm.response.json();",
+                  "pm.collectionVariables.set('signatureId', json.id || '');"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminAccessToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/signatures",
+              "host": [
+                "{{baseUrl}}/api/signatures"
+              ],
+              "path": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"threatName\": \"Trojan.Binary.A\",\n  \"firstBytesHex\": \"A1B2C3D4\",\n  \"remainderHashHex\": \"EEFF0011AA22\",\n  \"remainderLength\": 128,\n  \"fileType\": \"exe\",\n  \"offsetStart\": 0,\n  \"offsetEnd\": 64\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Создать сигнатуру #2 (успех)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 201', function () { pm.response.to.have.status(201); });",
+                  "const json = pm.response.json();",
+                  "pm.collectionVariables.set('signatureId2', json.id || '');"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminAccessToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/signatures",
+              "host": [
+                "{{baseUrl}}/api/signatures"
+              ],
+              "path": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"threatName\": \"Trojan.Binary.B\",\n  \"firstBytesHex\": \"CAFEBABE\",\n  \"remainderHashHex\": \"010203040506\",\n  \"remainderLength\": 512,\n  \"fileType\": \"dll\",\n  \"offsetStart\": 4,\n  \"offsetEnd\": 260\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Удалить сигнатуру #2 для increment (успех)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set('sinceTs', new Date().toISOString());"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminAccessToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/signatures/{{signatureId2}}",
+              "host": [
+                "{{baseUrl}}/api/signatures/{{signatureId2}}"
+              ],
+              "path": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Бинарный full dump (успех)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userAAccessToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/binary/signatures/full",
+              "host": [
+                "{{baseUrl}}/api/binary/signatures/full"
+              ],
+              "path": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Бинарный full dump (ошибка)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/binary/signatures/full",
+              "host": [
+                "{{baseUrl}}/api/binary/signatures/full"
+              ],
+              "path": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Бинарный increment (успех)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userAAccessToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/binary/signatures/increment?since={{sinceTs}}",
+              "host": [
+                "{{baseUrl}}/api/binary/signatures/increment?since={{sinceTs}}"
+              ],
+              "path": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Бинарный increment (ошибка)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userAAccessToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/binary/signatures/increment",
+              "host": [
+                "{{baseUrl}}/api/binary/signatures/increment"
+              ],
+              "path": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Бинарный by-ids (успех)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userAAccessToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/binary/signatures/by-ids",
+              "host": [
+                "{{baseUrl}}/api/binary/signatures/by-ids"
+              ],
+              "path": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ids\": [\n    \"{{signatureId}}\",\n    \"{{signatureId2}}\",\n    \"{{missingSignatureId}}\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Бинарный by-ids (ошибка)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userAAccessToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/binary/signatures/by-ids",
+              "host": [
+                "{{baseUrl}}/api/binary/signatures/by-ids"
+              ],
+              "path": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ids\": []\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
