@@ -88,6 +88,10 @@
     {
       "key": "userBId",
       "value": ""
+    },
+    {
+      "key": "signatureId2",
+      "value": ""
     }
   ],
   "item": [
@@ -1817,6 +1821,287 @@
                 "{{baseUrl}}/api/signatures/{{signatureId}}/audit"
               ],
               "path": []
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Lab_5",
+      "item": [
+        {
+          "name": "Создать сигнатуру #1 (успех)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 201', function () { pm.response.to.have.status(201); });",
+                  "const json = pm.response.json();",
+                  "pm.collectionVariables.set('signatureId', json.id || '');"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminAccessToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/signatures",
+              "host": [
+                "{{baseUrl}}/api/signatures"
+              ],
+              "path": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"threatName\": \"Trojan.Binary.A\",\n  \"firstBytesHex\": \"A1B2C3D4\",\n  \"remainderHashHex\": \"EEFF0011AA22\",\n  \"remainderLength\": 128,\n  \"fileType\": \"exe\",\n  \"offsetStart\": 0,\n  \"offsetEnd\": 64\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Создать сигнатуру #2 (успех)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 201', function () { pm.response.to.have.status(201); });",
+                  "const json = pm.response.json();",
+                  "pm.collectionVariables.set('signatureId2', json.id || '');"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminAccessToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/signatures",
+              "host": [
+                "{{baseUrl}}/api/signatures"
+              ],
+              "path": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"threatName\": \"Trojan.Binary.B\",\n  \"firstBytesHex\": \"CAFEBABE\",\n  \"remainderHashHex\": \"010203040506\",\n  \"remainderLength\": 512,\n  \"fileType\": \"dll\",\n  \"offsetStart\": 4,\n  \"offsetEnd\": 260\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Удалить сигнатуру #2 для increment (успех)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set('sinceTs', new Date().toISOString());"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminAccessToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/signatures/{{signatureId2}}",
+              "host": [
+                "{{baseUrl}}/api/signatures/{{signatureId2}}"
+              ],
+              "path": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Бинарный full dump (успех)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userAAccessToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/binary/signatures/full",
+              "host": [
+                "{{baseUrl}}/api/binary/signatures/full"
+              ],
+              "path": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Бинарный full dump (ошибка)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/binary/signatures/full",
+              "host": [
+                "{{baseUrl}}/api/binary/signatures/full"
+              ],
+              "path": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Бинарный increment (успех)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userAAccessToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/binary/signatures/increment?since={{sinceTs}}",
+              "host": [
+                "{{baseUrl}}/api/binary/signatures/increment?since={{sinceTs}}"
+              ],
+              "path": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Бинарный increment (ошибка)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userAAccessToken}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/binary/signatures/increment",
+              "host": [
+                "{{baseUrl}}/api/binary/signatures/increment"
+              ],
+              "path": []
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Бинарный by-ids (успех)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userAAccessToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/binary/signatures/by-ids",
+              "host": [
+                "{{baseUrl}}/api/binary/signatures/by-ids"
+              ],
+              "path": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ids\": [\n    \"{{signatureId}}\",\n    \"{{signatureId2}}\",\n    \"{{missingSignatureId}}\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Бинарный by-ids (ошибка)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{userAAccessToken}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/binary/signatures/by-ids",
+              "host": [
+                "{{baseUrl}}/api/binary/signatures/by-ids"
+              ],
+              "path": []
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ids\": []\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             }
           },
           "response": []
